@@ -58,12 +58,12 @@ bool CZoneAllocator::Initialize()
 	CLogger* pLogger = CLogger::Get();
 
 #if RASPI >= 4
-	const size_t nHighHeapSize = pMemorySystem->GetHeapFreeSpace(HEAP_HIGH);
+	const size_t nHighHeapSize = pMemorySystem->GetHeapFreeSpace(HEAP_ANY);
 	if (nHighHeapSize)
 	{
 		// >1GB RAM Pi 4 - allocate all of the remaining HIGH region
 		m_nHeapSize = nHighHeapSize - sizeof(THeapBlockHeader);
-		m_pHeap     = pMemorySystem->HeapAllocate(m_nHeapSize, HEAP_HIGH);
+		m_pHeap     = pMemorySystem->HeapAllocate(m_nHeapSize, HEAP_ANY);
 	}
 	else
 	{
