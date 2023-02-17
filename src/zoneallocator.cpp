@@ -57,23 +57,19 @@ bool CZoneAllocator::Initialize()
 	CMemorySystem* pMemorySystem = CMemorySystem::Get();
 	CLogger* pLogger = CLogger::Get();
 
-#if RASPI >= 4
-	const size_t nHighHeapSize = pMemorySystem->GetHeapFreeSpace(HEAP_ANY);
+	const size_t nHighHeapSize = pMemorySystem->GetHeapFreeSpace(HEAP_HIGH);
 	if (nHighHeapSize)
 	{
 		// >1GB RAM Pi 4 - allocate all of the remaining HIGH region
 		m_nHeapSize = nHighHeapSize - sizeof(THeapBlockHeader);
-		m_pHeap     = pMemorySystem->HeapAllocate(m_nHeapSize, HEAP_ANY);
+		m_pHeap     = pMemorySystem->HeapAllocate(m_nHeapSize, HEAP_HIGH);
 	}
 	else
 	{
-#endif
 		// Allocate the majority of the remaining LOW region; leave some space for Circle/libc malloc()
 		m_nHeapSize = pMemorySystem->GetHeapFreeSpace(HEAP_LOW) - MallocHeapSize;
 		m_pHeap     = pMemorySystem->HeapAllocate(m_nHeapSize, HEAP_LOW);
-#if RASPI >= 4
 	}
-#endif
 
 	if (!m_pHeap)
 	{
